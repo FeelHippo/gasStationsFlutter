@@ -6,7 +6,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:flutter_map/flutter_map.dart';
+import 'package:autosense/ui/form.dart';
 import 'package:latlong2/latlong.dart';
+
+import 'dart:developer' as developer;
+
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -71,7 +75,17 @@ class _HomePageState extends State<HomePage> {
                     width: 48,
                     height: 48,
                     point: LatLng(station.latitude, station.longitude),
-                    builder: (context) => const Icon(Icons.location_on, size: 48,)
+                    builder: (context) => IconButton(
+                        onPressed: () {
+                          showModalBottomSheet(
+                              context: context,
+                              builder: (context) {
+                                return StationForm(station: station);
+                              }
+                          );
+                        },
+                        icon: const Icon(Icons.location_on, size: 48)
+                    )
                 )).toList()
             ),
           ]

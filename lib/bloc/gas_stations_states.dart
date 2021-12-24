@@ -1,6 +1,5 @@
 import 'package:equatable/equatable.dart';
 import 'package:autosense/data/models/station.dart';
-import 'package:autosense/data/app_http_manager.dart';
 
 abstract class StationsState extends Equatable {
 

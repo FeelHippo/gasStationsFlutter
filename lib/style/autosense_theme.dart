@@ -83,7 +83,8 @@ class AutoSenseTheme {
         selectedItemColor: Color(0xff3898ec),
       ),
       textTheme: lightTextTheme,
-      iconTheme: IconThemeData(color: Color(0xff6c4796)),
+      iconTheme: const IconThemeData(color: Color(0xff6c4796)),
+      inputDecorationTheme: const InputDecorationTheme(border: OutlineInputBorder(borderSide: BorderSide(color:  Color(0xff6c4796)))),
     );
   }
 

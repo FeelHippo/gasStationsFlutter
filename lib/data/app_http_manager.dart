@@ -7,7 +7,6 @@ import 'package:autosense/data/models/station.dart';
 import 'package:autosense/data/app_exceptions.dart';
 import 'package:autosense/data/models/repository.dart';
 import 'package:autosense/data/models/station.dart';
-import 'dart:developer' as developer;
 
 import 'package:http/http.dart' as http;
 
@@ -26,7 +25,6 @@ class AppHttpManager  implements Repository {
             timeout,
             onTimeout: () => throw TimeoutException(),
           );
-      developer.log('HELLO $response');
       return _returnResponse(response);
     } on Exception catch (_) {
       throw NetworkException('No Internet Connection');
