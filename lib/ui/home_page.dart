@@ -4,6 +4,7 @@ import 'package:autosense/bloc/gas_stations_states.dart';
 import 'package:autosense/data/models/station.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_map/flutter_map.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -50,12 +51,12 @@ class _HomePageState extends State<HomePage> {
   }
 
   Widget _list(List<Station> stations) {
-    return Expanded(
+    return Center(
       child: ListView.builder(
         itemCount: stations.length,
         itemBuilder: (_, index) {
           Station station = stations[index];
-          return Text(station.name, style: Theme.of(context).textTheme.headline5,);
+          return Text(station.id, style: Theme.of(context).textTheme.headline5,);
         },
       ),
     );

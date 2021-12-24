@@ -6,22 +6,24 @@ part 'station.g.dart';
 
 @JsonSerializable(explicitToJson: true)
 class Station {
-  final int id;
-  final String name;
-  final String address;
-  final String city;
+  final String id;
+  final String? name;
+  final String? address;
+  final String? city;
   final double latitude;
   final double longitude;
   final List<Pump> pumps;
+  final Meta meta;
 
   Station({
     required this.id,
-    required this.name,
-    required this.address,
-    required this.city,
+    this.name,
+    this.address,
+    this.city,
     required this.latitude,
     required this.longitude,
     required this.pumps,
+    required this.meta,
   });
 
   factory Station.fromJson(Map<String, dynamic> json) => _$StationFromJson(json);
@@ -30,18 +32,36 @@ class Station {
 
 @JsonSerializable(explicitToJson: true)
 class Pump {
-  final int id;
+  final String id;
   final String fuel_type;
-  final double price;
+  dynamic price;
   final bool available;
 
   Pump({
     required this.id,
     required this.fuel_type,
-    required this.price,
+    this.price,
     required this.available,
   });
 
   factory Pump.fromJson(Map<String, dynamic> json) => _$PumpFromJson(json);
   Map<String, dynamic> toJson() => _$PumpToJson(this);
+}
+
+@JsonSerializable(explicitToJson: true)
+class Meta {
+  final int revision;
+  final int created;
+  final int version;
+  final int? updated;
+
+  Meta({
+    required this.revision,
+    required this.created,
+    required this.version,
+    this.updated,
+});
+
+  factory Meta.fromJson(Map<String, dynamic> json) => _$MetaFromJson(json);
+  Map<String, dynamic> toJson() => _$MetaToJson(this);
 }

@@ -40,7 +40,6 @@ class AppHttpManager implements Repository {
   dynamic _returnResponse(http.Response response) {
     if (response.statusCode >= 200 && response.statusCode <= 299) {
       List<Station> stations;
-      developer.log('OK ${json.decode(response.body) as List}');
       stations = (json.decode(response.body) as List)
         .map((station) => Station.fromJson(station))
         .toList();
