@@ -3,9 +3,9 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:autosense/core/constants.dart';
-import 'package:autosense/data/models/repository.dart';
 import 'package:autosense/data/models/station.dart';
 import 'package:autosense/data/app_exceptions.dart';
+import 'package:autosense/data/models/repository.dart';
 import 'package:autosense/data/models/station.dart';
 import 'dart:developer' as developer;
 
@@ -13,7 +13,7 @@ import 'package:http/http.dart' as http;
 
 const timeout = Duration(seconds: 3);
 
-class AppHttpManager implements Repository {
+class AppHttpManager  implements Repository {
 
   @override
   Future<List<Station>> get() async {
@@ -26,6 +26,7 @@ class AppHttpManager implements Repository {
             timeout,
             onTimeout: () => throw TimeoutException(),
           );
+      developer.log('HELLO $response');
       return _returnResponse(response);
     } on Exception catch (_) {
       throw NetworkException('No Internet Connection');

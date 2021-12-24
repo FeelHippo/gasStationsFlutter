@@ -1,43 +1,37 @@
 import 'dart:io';
 import 'package:autosense/bloc/gas_stations_states.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:autosense/data/models/repository.dart';
 import 'package:autosense/data/app_exceptions.dart';
 import 'package:autosense/bloc/gas_station_events.dart';
 import 'package:autosense/data/models/station.dart';
+import 'package:autosense/data/models/repository.dart';
+import 'package:autosense/data/app_http_manager.dart';
 
 
 class StationsBloc extends Bloc<StationEvents, StationsState> {
-  final Repository stationsRepository;
-  List<Station> stations = [];
 
-  StationsBloc({ required this.stationsRepository }) : super(StationsInitState());
+  List<Station> _stations = [];
+  List<Station> get stations => _stations;
+  final Repository stationsRepository;
+
+  StationsBloc({ required this.stationsRepository }) : super(const StationsInitState(stations: []));
 
   @override
   Stream<StationsState> mapEventToState(StationEvents event) async* {
-    switch (event) {
-      case StationEvents.getStations:
-        yield StationsLoading();
+      if (event is GetStations) {
+        yield StationsLoading(stations: _stations);
         try {
-          stations = await stationsRepository.get();
-          yield StationsLoaded(stations: stations);
+          _stations = await stationsRepository.get();
+          yield StationsLoaded(stations: _stations);
         } on SocketException {
-          yield StationsListError(
-            error: NetworkException('No Internet Connection')
-          );
+          yield StationsListError(stations: _stations);
         } on HttpException {
-          yield StationsListError(
-            error: NoServiceException('No Service Found')
-          );
+          yield StationsListError(stations: _stations);
         } on FormatException {
-          yield StationsListError(
-            error:  InvalidFormatException('Invalid Response Format')
-          );
+          yield StationsListError(stations: _stations);
         } catch (e) {
-          yield StationsListError(
-            error: GenericException('Unknown Error')
-          );
+          yield StationsListError(stations: _stations);
         }
-    }
+      }
   }
 }

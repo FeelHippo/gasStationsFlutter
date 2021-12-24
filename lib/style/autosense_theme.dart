@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class AutoSenseTheme {
-  // 1
+
   static TextTheme lightTextTheme = TextTheme(
     bodyText1: GoogleFonts.lato(
       fontSize: 14.0,
@@ -83,6 +83,7 @@ class AutoSenseTheme {
         selectedItemColor: Color(0xff3898ec),
       ),
       textTheme: lightTextTheme,
+      iconTheme: IconThemeData(color: Color(0xff6c4796)),
     );
   }
 
@@ -102,6 +103,7 @@ class AutoSenseTheme {
         selectedItemColor: Color(0xff3898ec),
       ),
       textTheme: darkTextTheme,
+      iconTheme: IconThemeData(color: Color(0xff6c4796)),
     );
   }
 }

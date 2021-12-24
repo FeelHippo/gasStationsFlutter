@@ -4,7 +4,9 @@ import 'package:autosense/bloc/gas_stations_states.dart';
 import 'package:autosense/data/models/station.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+
 import 'package:flutter_map/flutter_map.dart';
+import 'package:latlong2/latlong.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -22,7 +24,7 @@ class _HomePageState extends State<HomePage> {
   }
 
   _loadStations() async {
-    context.read<StationsBloc>().add(StationEvents.getStations);
+    context.read<StationsBloc>().add(const GetStations());
   }
 
   @override
@@ -31,8 +33,7 @@ class _HomePageState extends State<HomePage> {
       body: BlocBuilder<StationsBloc, StationsState>(
           builder: (BuildContext context, StationsState state) {
             if (state is StationsListError) {
-              final error = state.error;
-              String message = '${error.message}\nTap to Retry';
+              String message = 'Tap to Retry';
               return ElevatedButton(
                   child: Text('$message ...reload'),
                   onPressed: () {
@@ -52,13 +53,29 @@ class _HomePageState extends State<HomePage> {
 
   Widget _list(List<Station> stations) {
     return Center(
-      child: ListView.builder(
-        itemCount: stations.length,
-        itemBuilder: (_, index) {
-          Station station = stations[index];
-          return Text(station.id, style: Theme.of(context).textTheme.headline5,);
-        },
-      ),
+      child: FlutterMap(
+          options: MapOptions(
+            center: LatLng(47.373878, 8.545094),
+            zoom: 10,
+          ),
+          layers: [
+            TileLayerOptions(
+                urlTemplate: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+                subdomains: ['a', 'b', 'c'],
+                attributionBuilder: (_) {
+                  return const Text('© OpenStreetMap contributors');
+                }
+            ),
+            MarkerLayerOptions(
+                markers: stations.map((station) => Marker(
+                    width: 48,
+                    height: 48,
+                    point: LatLng(station.latitude, station.longitude),
+                    builder: (context) => const Icon(Icons.location_on, size: 48,)
+                )).toList()
+            ),
+          ]
+      )
     );
   }
 }
