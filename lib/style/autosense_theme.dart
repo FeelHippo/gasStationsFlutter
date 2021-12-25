@@ -84,7 +84,8 @@ class AutoSenseTheme {
       ),
       textTheme: lightTextTheme,
       iconTheme: const IconThemeData(color: Color(0xff6c4796)),
-      inputDecorationTheme: const InputDecorationTheme(border: OutlineInputBorder(borderSide: BorderSide(color:  Color(0xff6c4796)))),
+      buttonTheme: const ButtonThemeData(buttonColor: Color(0xff6c4796)),
+      elevatedButtonTheme: ElevatedButtonThemeData(style: ButtonStyle(backgroundColor: MaterialStateProperty.all(const Color(0xff6c4796)))),
     );
   }
 
@@ -104,7 +105,8 @@ class AutoSenseTheme {
         selectedItemColor: Color(0xff3898ec),
       ),
       textTheme: darkTextTheme,
-      iconTheme: IconThemeData(color: Color(0xff6c4796)),
+      iconTheme: const IconThemeData(color: Color(0xff6c4796)),
+      elevatedButtonTheme: ElevatedButtonThemeData(style: ButtonStyle(backgroundColor: MaterialStateProperty.all(const Color(0xff6c4796)))),
     );
   }
 }
