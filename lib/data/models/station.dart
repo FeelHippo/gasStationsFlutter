@@ -13,7 +13,6 @@ class Station {
   final double latitude;
   final double longitude;
   final List<Pump> pumps;
-  final Meta meta;
 
   Station({
     required this.id,
@@ -23,7 +22,6 @@ class Station {
     required this.latitude,
     required this.longitude,
     required this.pumps,
-    required this.meta,
   });
 
   factory Station.fromJson(Map<String, dynamic> json) => _$StationFromJson(json);
@@ -46,22 +44,4 @@ class Pump {
 
   factory Pump.fromJson(Map<String, dynamic> json) => _$PumpFromJson(json);
   Map<String, dynamic> toJson() => _$PumpToJson(this);
-}
-
-@JsonSerializable(explicitToJson: true)
-class Meta {
-  final int revision;
-  final int created;
-  final int version;
-  final int? updated;
-
-  Meta({
-    required this.revision,
-    required this.created,
-    required this.version,
-    this.updated,
-});
-
-  factory Meta.fromJson(Map<String, dynamic> json) => _$MetaFromJson(json);
-  Map<String, dynamic> toJson() => _$MetaToJson(this);
 }

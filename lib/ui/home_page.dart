@@ -61,6 +61,26 @@ class _HomePageState extends State<HomePage> {
           options: MapOptions(
             center: LatLng(47.373878, 8.545094),
             zoom: 10,
+            onTap: (position, coordinates) {
+              Station newStation = Station(
+                  id: '',
+                  latitude: coordinates.latitude,
+                  longitude: coordinates.longitude,
+                  pumps: ['BENZIN_95', 'BENZIN_98', 'DIESEL']
+                      .asMap().entries.map((type) => Pump(
+                        id: '1000${type.key + 1}',
+                        fuel_type: type.value,
+                        available: true,
+                        price: 0,
+                  )).toList(),
+              );
+              showModalBottomSheet(
+                  context: context,
+                  builder: (context) {
+                    return StationForm(station: newStation);
+                  }
+              );
+            }
           ),
           layers: [
             TileLayerOptions(

@@ -135,7 +135,7 @@ class _FormState extends State<StationForm> {
               Container(
                 child: ElevatedButton(
                   child: const Text('Submit'),
-                  onPressed: () {
+                  onPressed: formTouched == false ? null : () {
                     if (formTouched == true && _formKey.currentState!.validate()) {
                       _formKey.currentState?.save();
                       bool isNewStation = widget.station.id == '';
@@ -144,7 +144,6 @@ class _FormState extends State<StationForm> {
                       } else {
                         // Bloc call to update
                       }
-                      developer.log('SOMETHING CHANGED: ${widget.station.id}');
                     }
                   },
                 ),
