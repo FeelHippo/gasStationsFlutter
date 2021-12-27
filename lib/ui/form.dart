@@ -148,8 +148,10 @@ class _FormState extends State<StationForm> {
                       if (formTouched == true && _formKey.currentState!.validate()) {
                         _formKey.currentState?.save();
                         if (widget.isNewStation) {
+                          developer.log('New Station');
                           // Bloc to create station
                         } else {
+                          developer.log('Update Station');
                           // Bloc call to update
                         }
                       }
