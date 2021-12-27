@@ -12,3 +12,12 @@ class GetStations extends StationEvents {
   List<Object> get props => [];
 }
 
+class DeleteStation extends StationEvents {
+  final String stationId;
+  const DeleteStation(this.stationId);
+
+  @override
+  List<Object> get props => [];
+  @override
+  String toString() => 'DeleteStation { id: $stationId }';
+}

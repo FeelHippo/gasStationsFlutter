@@ -1,12 +1,19 @@
+import 'package:autosense/bloc/gas_stations_bloc.dart';
+import 'package:autosense/bloc/gas_station_events.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:autosense/data/models/station.dart';
+import 'package:autosense/ui/home_page.dart';
 
 import 'dart:developer' as developer;
 
+import 'package:flutter_bloc/flutter_bloc.dart';
+
 class StationForm extends StatefulWidget {
-  const StationForm({Key? key, required this.station}) : super(key: key);
+  const StationForm({Key? key, required this.station, required this.isNewStation}) : super(key: key);
 
   final Station station;
+  final bool isNewStation;
 
   @override
   _FormState createState() => _FormState();
@@ -132,21 +139,50 @@ class _FormState extends State<StationForm> {
                   ),
                 )).toList()
               ),
-              Container(
-                child: ElevatedButton(
-                  child: const Text('Submit'),
-                  onPressed: formTouched == false ? null : () {
-                    if (formTouched == true && _formKey.currentState!.validate()) {
-                      _formKey.currentState?.save();
-                      bool isNewStation = widget.station.id == '';
-                      if (isNewStation) {
-                        // Bloc to create station
-                      } else {
-                        // Bloc call to update
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  ElevatedButton(
+                    child: const Text('Submit'),
+                    onPressed: formTouched == false ? null : () {
+                      if (formTouched == true && _formKey.currentState!.validate()) {
+                        _formKey.currentState?.save();
+                        if (widget.isNewStation) {
+                          // Bloc to create station
+                        } else {
+                          // Bloc call to update
+                        }
                       }
-                    }
-                  },
-                ),
+                    },
+                  ),
+                  if (widget.isNewStation == false) SizedBox(width: 12),
+                  if (widget.isNewStation == false) ElevatedButton(
+                    child: const Text('Delete'),
+                    onPressed: () => showDialog(
+                        context: context,
+                        builder: (BuildContext context) => AlertDialog(
+                          title: const Text('This station will be permanently deleted'),
+                          content: const Text('Are you sure you want to proceed?'),
+                          actions: <Widget>[
+                            TextButton(
+                              onPressed: () => Navigator.pop(context),
+                              child: const Text('No'),
+                            ),
+                            TextButton(
+                              onPressed: () {
+                                context.read<StationsBloc>().add(DeleteStation(widget.station.id));
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(builder: (context) => const HomePage()),
+                                );
+                              },
+                              child: const Text('Yes'),
+                            ),
+                          ],
+                        )
+                    )
+                  )
+                ],
               )
             ],
           )

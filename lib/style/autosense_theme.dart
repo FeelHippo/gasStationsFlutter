@@ -84,6 +84,7 @@ class AutoSenseTheme {
       ),
       textTheme: lightTextTheme,
       iconTheme: const IconThemeData(color: Color(0xff6c4796)),
+      scaffoldBackgroundColor: Colors.transparent,
       buttonTheme: const ButtonThemeData(buttonColor: Color(0xff6c4796)),
       elevatedButtonTheme: ElevatedButtonThemeData(style: ButtonStyle(backgroundColor: MaterialStateProperty.all(const Color(0xff6c4796)))),
     );
@@ -106,6 +107,8 @@ class AutoSenseTheme {
       ),
       textTheme: darkTextTheme,
       iconTheme: const IconThemeData(color: Color(0xff6c4796)),
+      scaffoldBackgroundColor: Colors.transparent,
+      buttonTheme: const ButtonThemeData(buttonColor: Color(0xff6c4796)),
       elevatedButtonTheme: ElevatedButtonThemeData(style: ButtonStyle(backgroundColor: MaterialStateProperty.all(const Color(0xff6c4796)))),
     );
   }

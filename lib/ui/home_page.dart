@@ -1,6 +1,8 @@
 import 'package:autosense/bloc/gas_station_events.dart';
 import 'package:autosense/bloc/gas_stations_bloc.dart';
 import 'package:autosense/bloc/gas_stations_states.dart';
+import 'package:autosense/data/app_http_manager.dart';
+import 'package:autosense/style/autosense_theme.dart';
 import 'package:autosense/data/models/station.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -33,25 +35,35 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: BlocBuilder<StationsBloc, StationsState>(
-          builder: (BuildContext context, StationsState state) {
-            if (state is StationsListError) {
-              String message = 'Tap to Retry';
-              return ElevatedButton(
-                  child: Text('$message ...reload'),
-                  onPressed: () {
-                    _loadStations();
-                  }
-              );
+    return MaterialApp(
+        theme: AutoSenseTheme.dark(),
+        title: 'Gas Stations',
+        home: BlocBuilder<StationsBloc, StationsState>(
+            builder: (_, StationsState state) {
+              if (state is StationsListError) {
+                return Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    ElevatedButton(
+                        child: const Text('...reload'),
+                        onPressed: () {
+                          _loadStations();
+                        }
+                    )
+                  ],
+                );
+              }
+              if (state is StationDeleted) {
+                _loadStations();
+              }
+              if (state is StationsLoaded) {
+                List<Station> stations = state.stations;
+                return _list(stations);
+              }
+              return const Text('loading...');
             }
-            if (state is StationsLoaded) {
-              List<Station> stations = state.stations;
-              return _list(stations);
-            }
-            return Text('loading...');
-          }
-      )
+        )
     );
   }
 
@@ -77,7 +89,10 @@ class _HomePageState extends State<HomePage> {
               showModalBottomSheet(
                   context: context,
                   builder: (context) {
-                    return StationForm(station: newStation);
+                    return BlocProvider.value(
+                      value: BlocProvider.of<StationsBloc>(context),
+                      child: StationForm(station: newStation, isNewStation: true),
+                    );
                   }
               );
             }
@@ -86,25 +101,28 @@ class _HomePageState extends State<HomePage> {
             TileLayerOptions(
                 urlTemplate: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
                 subdomains: ['a', 'b', 'c'],
-                attributionBuilder: (_) {
-                  return const Text('© OpenStreetMap contributors');
-                }
             ),
             MarkerLayerOptions(
                 markers: stations.map((station) => Marker(
                     width: 48,
                     height: 48,
                     point: LatLng(station.latitude, station.longitude),
-                    builder: (context) => IconButton(
-                        onPressed: () {
-                          showModalBottomSheet(
-                              context: context,
-                              builder: (context) {
-                                return StationForm(station: station);
-                              }
-                          );
-                        },
-                        icon: const Icon(Icons.location_on, size: 48)
+                    builder: (context) => Scaffold(
+
+                      body: IconButton(
+                          onPressed: () {
+                            showModalBottomSheet(
+                                context: context,
+                                builder: (context) {
+                                  return BlocProvider.value(
+                                    value: BlocProvider.of<StationsBloc>(context),
+                                    child: StationForm(station: station, isNewStation: false),
+                                  );
+                                }
+                            );
+                          },
+                          icon: const Icon(Icons.location_on, size: 48)
+                      ),
                     )
                 )).toList()
             ),

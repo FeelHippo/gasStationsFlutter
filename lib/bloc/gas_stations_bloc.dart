@@ -8,6 +8,8 @@ import 'package:autosense/data/models/repository.dart';
 import 'package:autosense/data/app_http_manager.dart';
 
 
+import 'dart:developer' as developer;
+
 class StationsBloc extends Bloc<StationEvents, StationsState> {
 
   List<Station> _stations = [];
@@ -23,6 +25,21 @@ class StationsBloc extends Bloc<StationEvents, StationsState> {
         try {
           _stations = await stationsRepository.get();
           yield StationsLoaded(stations: _stations);
+        } on SocketException {
+          yield StationsListError(stations: _stations);
+        } on HttpException {
+          yield StationsListError(stations: _stations);
+        } on FormatException {
+          yield StationsListError(stations: _stations);
+        } catch (e) {
+          yield StationsListError(stations: _stations);
+        }
+      }
+      if (event is DeleteStation) {
+        yield StationsLoading(stations: _stations);
+        try {
+          await stationsRepository.delete(event.stationId);
+          yield const StationDeleted();
         } on SocketException {
           yield StationsListError(stations: _stations);
         } on HttpException {

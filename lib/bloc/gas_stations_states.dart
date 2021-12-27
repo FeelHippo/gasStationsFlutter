@@ -26,3 +26,6 @@ class StationsListError extends StationsState {
   final List<Station> stations;
   StationsListError({ required this.stations }) : super(stations: stations);
 }
+class StationDeleted extends StationsState {
+  const StationDeleted();
+}
