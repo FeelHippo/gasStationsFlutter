@@ -7,9 +7,6 @@ import 'package:autosense/style/autosense_theme.dart';
 import 'package:autosense/data/models/station.dart';
 import 'package:flutter/material.dart';
 
-import 'dart:developer' as developer;
-
-
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
 
@@ -50,7 +47,11 @@ class _HomePageState extends State<HomePage> {
                   ],
                 );
               }
-              if (state is StationDeleted) {
+              if (
+                state is StationCreated
+                || state is StationUpdated
+                || state is StationDeleted
+              ) {
                 _loadStations();
               }
               if (state is StationsLoaded) {

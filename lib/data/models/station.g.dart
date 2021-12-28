@@ -8,9 +8,9 @@ part of 'station.dart';
 
 Station _$StationFromJson(Map<String, dynamic> json) => Station(
       id: json['id'] as String,
-      name: json['name'] as String?,
-      address: json['address'] as String?,
-      city: json['city'] as String?,
+      name: json['name'] as String,
+      address: json['address'] as String,
+      city: json['city'] as String,
       latitude: (json['latitude'] as num).toDouble(),
       longitude: (json['longitude'] as num).toDouble(),
       pumps: (json['pumps'] as List<dynamic>)

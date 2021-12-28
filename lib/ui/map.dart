@@ -26,6 +26,15 @@ class _StationsMapState extends State<StationsMap> {
       }
   );
 
+  static int _generateId(List<Station> stations) {
+    if (stations.isNotEmpty) {
+      var ids = stations.map((station) => int.parse(station.id.split('_')[1])).toList()..sort();
+      return ids[stations.length - 1] + 1;
+    } else {
+      return 1;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -36,7 +45,10 @@ class _StationsMapState extends State<StationsMap> {
                   zoom: 10,
                   onTap: (position, coordinates) {
                     Station newStation = Station(
-                      id: '',
+                      id: 'MIGROL_${_generateId(widget.stations)}',
+                      name: '',
+                      address: '',
+                      city: '',
                       latitude: coordinates.latitude,
                       longitude: coordinates.longitude,
                       pumps: ['BENZIN_95', 'BENZIN_98', 'DIESEL']
@@ -61,7 +73,7 @@ class _StationsMapState extends State<StationsMap> {
                         height: 48,
                         point: LatLng(station.latitude, station.longitude),
                         builder: (context) => IconButton(
-                          onPressed: () =>_showModalBottomSheet(context, station, false),
+                          onPressed: () => _showModalBottomSheet(context, station, false),
                           icon: const Icon(Icons.location_on, size: 48),
                         )
                     )).toList()

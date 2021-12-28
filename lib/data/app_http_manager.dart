@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'dart:async';
-import 'dart:io';
 
 import 'package:autosense/core/constants.dart';
 import 'package:autosense/data/models/station.dart';
@@ -9,8 +8,6 @@ import 'package:autosense/data/models/repository.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 import 'package:http/http.dart' as http;
-
-import 'dart:developer' as developer;
 
 const timeout = Duration(seconds: 3);
 
@@ -45,6 +42,74 @@ class AppHttpManager  implements Repository {
             onTimeout: () => throw TimeoutException(),
           );
       return _returnResponse(response);
+    } on Exception catch (_) {
+      throw NetworkException('No Internet Connection');
+    }
+  }
+
+  @override
+  Future<bool> create(station) async {
+    try {
+
+      final jsonStation = Station(
+        id: station.id,
+        latitude: station.latitude,
+        longitude: station.longitude,
+        name: station.name,
+        address: station.address,
+        city: station.city,
+        pumps: station.pumps,
+      ).toJson();
+
+      final storage = new FlutterSecureStorage();
+      String? token = await storage.read(key: 'JwtToken');
+
+      print('Api Create request $createEndpoint');
+      final response = await http
+          .post(
+            _queryBuilder(createEndpoint),
+            headers: <String, String>{
+              'Authorization': 'Bearer $token',
+              'Accept': 'application/json',
+              'Content-type': 'application/json',
+            },
+            body: json.encode(jsonStation),
+          );
+      return response.statusCode == 200;
+    } on Exception catch (_) {
+      throw NetworkException('No Internet Connection');
+    }
+  }
+
+  @override
+  Future<bool> update(station) async {
+    try {
+
+      final jsonStation = Station(
+        id: station.id,
+        latitude: station.latitude,
+        longitude: station.longitude,
+        name: station.name,
+        address: station.address,
+        city: station.city,
+        pumps: station.pumps,
+      ).toJson();
+
+      final storage = new FlutterSecureStorage();
+      String? token = await storage.read(key: 'JwtToken');
+
+      print('Api Update request $updateEndpoint');
+      final response = await http
+        .put(
+          _queryBuilder(updateEndpoint),
+          headers: <String, String>{
+            'Authorization': 'Bearer $token',
+            'Accept': 'application/json',
+            'Content-Type': 'application/json; charset=UTF-8',
+          },
+          body: json.encode(jsonStation),
+        );
+      return response.statusCode == 200;
     } on Exception catch (_) {
       throw NetworkException('No Internet Connection');
     }

@@ -4,8 +4,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:autosense/data/models/station.dart';
 import 'package:autosense/ui/home_page.dart';
-
-import 'dart:developer' as developer;
+import 'package:flutter/services.dart';
+import 'package:autosense/core/constants.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -21,18 +21,18 @@ class StationForm extends StatefulWidget {
 
 class _FormState extends State<StationForm> {
 
-  String? name;
-  String? address;
-  String? city;
-
-  Pump? pump;
-  late List<Pump?> pumps;
+  String _name = '';
+  String _address = '';
+  String _city = '';
+  List<Pump> _pumps = [];
   @override
   void initState() {
     super.initState();
-    pumps = List.filled(3, pump);
+    _name = widget.station.name;
+    _address = widget.station.address;
+    _city = widget.station.city;
+    _pumps = widget.station.pumps;
   }
-
 
   bool formTouched = false;
 
@@ -64,7 +64,12 @@ class _FormState extends State<StationForm> {
                   }
                   return null;
                 },
-                onSaved: (value) { name = value; },
+                onSaved: (value) {
+                  String nameValue = value ?? '';
+                  setState(() {
+                    _name = nameValue;
+                  });
+                },
                 decoration: const InputDecoration(
                   labelText: 'Name',
                   hintText: 'Name...',
@@ -82,7 +87,12 @@ class _FormState extends State<StationForm> {
                   }
                   return null;
                 },
-                onSaved: (value) { city = value; },
+                onSaved: (value) {
+                  String cityValue = value ?? '';
+                  setState(() {
+                    _city = cityValue;
+                  });
+                },
                 decoration: const InputDecoration(
                   labelText: 'City',
                   hintText: 'City...',
@@ -100,7 +110,12 @@ class _FormState extends State<StationForm> {
                   }
                   return null;
                 },
-                onSaved: (value) { address = value; },
+                onSaved: (value) {
+                  String addressValue = value ?? '';
+                  setState(() {
+                    _address = addressValue;
+                  });
+                },
                 decoration: const InputDecoration(
                   labelText: 'Address',
                   hintText: 'Address...',
@@ -112,28 +127,55 @@ class _FormState extends State<StationForm> {
                   flex: 1,
                   child: Container(
                     width: MediaQuery.of(context).size.width * 0.333,
-                    child: Column(
+                    child: Row(
                       children: [
-                        TextFormField(
-                          keyboardType: TextInputType.number,
-                          initialValue: widget.station.pumps[pump.key].price.toString(),
-                          onChanged: (inputText) {
-                            toggleFormIsTouched();
-                          },
-                          validator: (value) {
-                            if (value == null || value.isEmpty) {
-                              return 'Field Required';
-                            }
-                            return null;
-                          },
-                          onSaved: (value) { pumps[pump.key]?.price = value; },
-                          decoration: InputDecoration(
-                            labelText: pump.value.fuel_type,
-                            hintText: 'Type...',
-                            icon: const Icon(Icons.water_outlined),
-                          ),
+                        Expanded(
+                          child: TextFormField(
+                            keyboardType: TextInputType.numberWithOptions(decimal: true),
+                            inputFormatters: [
+                              FilteringTextInputFormatter.allow(RegExp('[0-9.,]+')),
+                            ],
+                            initialValue: widget.station.pumps[pump.key].price == 0
+                                ? null
+                                : widget.station.pumps[pump.key].price.toString(),
+                            onChanged: (inputText) {
+                              toggleFormIsTouched();
+                            },
+                            validator: (value) {
+                              if (value == null || value.isEmpty || value == '0') {
+                                return 'Field Required';
+                              }
+                              return null;
+                            },
+                            onSaved: (value) {
+                              String priceValue = value ?? '';
+                              setState(() {
+                                _pumps[pump.key].price = double.parse(num.parse(priceValue).toStringAsFixed(2));
+                              });
+                            },
+                            decoration: InputDecoration(
+                              labelText: fuelType['${pump.value.fuel_type}'],
+                              hintText: 'Type...',
+                            ),
 
-                        )
+                          ),
+                        ),
+                        Expanded(
+                          child: FormField(
+                            initialValue: widget.station.pumps[pump.key].available,
+                            builder: (state) {
+                              return Checkbox(
+                                  value: _pumps[pump.key].available,
+                                  onChanged: (value) {
+                                    bool checkValue = value ?? false;
+                                    setState(() {
+                                      _pumps[pump.key].available = checkValue;
+                                    });
+                                  }
+                              );
+                            },
+                          )
+                        ),
                       ],
                     ),
                   ),
@@ -144,16 +186,39 @@ class _FormState extends State<StationForm> {
                 children: <Widget>[
                   ElevatedButton(
                     child: const Text('Submit'),
-                    onPressed: formTouched == false ? null : () {
+                    onPressed: () {
                       if (formTouched == true && _formKey.currentState!.validate()) {
+
                         _formKey.currentState?.save();
+                        Station station = Station(
+                          id: widget.station.id,
+                          latitude: widget.station.latitude,
+                          longitude: widget.station.longitude,
+                          name: _name,
+                          address: _address,
+                          city: _city,
+                          pumps: _pumps,
+                        );
+
                         if (widget.isNewStation) {
-                          developer.log('New Station');
-                          // Bloc to create station
+                          context.read<StationsBloc>().add(CreateStation(station));
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => const HomePage()),
+                          );
                         } else {
-                          developer.log('Update Station');
-                          // Bloc call to update
+                          context.read<StationsBloc>().add(UpdateStation(station));
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => const HomePage()),
+                          );
                         }
+                      } else {
+                        showDialog(
+                            context: context,
+                            builder: (BuildContext context) => const AlertDialog(
+                                title: Text('Please fill out all fields before saving'))
+                        );
                       }
                     },
                   ),
