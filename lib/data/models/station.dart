@@ -1,8 +1,9 @@
+import 'package:equatable/equatable.dart';
 import 'package:json_annotation/json_annotation.dart';
 part 'station.g.dart';
 
 @JsonSerializable(explicitToJson: true)
-class Station {
+class Station extends Equatable  {
   final String id;
   final String name;
   final String address;
@@ -23,10 +24,21 @@ class Station {
 
   factory Station.fromJson(Map<String, dynamic> json) => _$StationFromJson(json);
   Map<String, dynamic> toJson() => _$StationToJson(this);
+
+  @override
+  List<Object> get props => [
+    id,
+    name,
+    address,
+    city,
+    latitude,
+    longitude,
+    pumps,
+  ];
 }
 
 @JsonSerializable(explicitToJson: true)
-class Pump {
+class Pump extends Equatable {
   final String id;
   final String fuel_type;
   dynamic price;
@@ -41,4 +53,12 @@ class Pump {
 
   factory Pump.fromJson(Map<String, dynamic> json) => _$PumpFromJson(json);
   Map<String, dynamic> toJson() => _$PumpToJson(this);
+
+  @override
+  List<Object> get props => [
+    id,
+    fuel_type,
+    price,
+    available,
+  ];
 }

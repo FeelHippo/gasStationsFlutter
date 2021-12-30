@@ -58,7 +58,9 @@ class _HomePageState extends State<HomePage> {
                 List<Station> stations = state.stations;
                 return StationsMap(stations: stations);
               }
-              return const Text('loading...');
+              return const Center(
+                child: CircularProgressIndicator(),
+              );
             }
         )
     );
