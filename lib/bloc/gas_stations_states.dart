@@ -14,7 +14,6 @@ class StationsInitState extends StationsState {
   final List<Station> stations;
   const StationsInitState({ required this.stations }) : super(stations: stations);
 }
-class StationsLoading extends StationsState {}
 class StationsLoaded extends StationsState {
   final List<Station> stations;
   StationsLoaded({ required this.stations }) : super(stations: stations);

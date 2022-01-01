@@ -30,7 +30,6 @@ class StationsBloc extends Bloc<StationEvents, StationsState> {
   }
 
   Stream<StationsState> _mapGetStationsToState() async* {
-    yield StationsLoading();
     try {
       _stations = await stationsRepository.get();
       yield StationsLoaded(stations: _stations);
@@ -46,7 +45,6 @@ class StationsBloc extends Bloc<StationEvents, StationsState> {
   }
 
   Stream<StationsState> _mapCreateStationToState(CreateStation event) async* {
-    yield StationsLoading();
     try {
       await stationsRepository.create(event.station);
       yield const StationCreated();
@@ -62,7 +60,6 @@ class StationsBloc extends Bloc<StationEvents, StationsState> {
   }
 
   Stream<StationsState> _mapUpdateStationToState(UpdateStation event) async* {
-    yield StationsLoading();
     try {
       await stationsRepository.update(event.station);
       yield const StationUpdated();
@@ -78,7 +75,6 @@ class StationsBloc extends Bloc<StationEvents, StationsState> {
   }
 
   Stream<StationsState> _mapDeleteStationToState(DeleteStation event) async* {
-    yield StationsLoading();
     try {
       await stationsRepository.delete(event.stationId);
       yield const StationDeleted();

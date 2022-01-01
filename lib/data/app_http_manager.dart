@@ -9,8 +9,6 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 import 'package:http/http.dart' as http;
 
-import 'dart:developer' as developer;
-
 const timeout = Duration(seconds: 5);
 
 class AppHttpManager  implements Repository {

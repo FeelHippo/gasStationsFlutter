@@ -21,6 +21,7 @@ class StationForm extends StatefulWidget {
 
 class _FormState extends State<StationForm> {
 
+  bool formTouched = false;
   String _name = '';
   String _address = '';
   String _city = '';
@@ -33,8 +34,6 @@ class _FormState extends State<StationForm> {
     _city = widget.station.city;
     _pumps = widget.station.pumps;
   }
-
-  bool formTouched = false;
 
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
@@ -171,6 +170,7 @@ class _FormState extends State<StationForm> {
                                     setState(() {
                                       _pumps[pump.key].available = checkValue;
                                     });
+                                    toggleFormIsTouched();
                                   }
                               );
                             },
@@ -186,7 +186,7 @@ class _FormState extends State<StationForm> {
                 children: <Widget>[
                   ElevatedButton(
                     child: const Text('Submit'),
-                    onPressed: () {
+                    onPressed: formTouched == false ? null : () {
                       if (formTouched == true && _formKey.currentState!.validate()) {
 
                         _formKey.currentState?.save();

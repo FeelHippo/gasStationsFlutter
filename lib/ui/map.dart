@@ -72,9 +72,12 @@ class _StationsMapState extends State<StationsMap> {
                         width: 48,
                         height: 48,
                         point: LatLng(station.latitude, station.longitude),
-                        builder: (context) => IconButton(
-                          onPressed: () => _showModalBottomSheet(context, station, false),
-                          icon: const Icon(Icons.location_on, size: 48),
+                        builder: (context) => Transform.translate(
+                          offset: const Offset(0.0, -24.0),
+                          child: IconButton(
+                            onPressed: () => _showModalBottomSheet(context, station, false),
+                            icon: const Icon(Icons.location_on, size: 48),
+                          ),
                         )
                     )).toList()
                 ),

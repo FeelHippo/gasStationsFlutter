@@ -79,7 +79,6 @@ main () {
       build: () => StationsBloc(stationsRepository: MockAppHttpManager()),
       act: (bloc) => bloc.add(const GetStations()),
       expect: () => [
-        StationsLoading(),
         StationsLoaded(stations: expectedResult),
       ],
     );
@@ -101,7 +100,6 @@ main () {
           ]
       ))),
       expect: () => [
-        StationsLoading(),
         StationCreated(),
       ],
     );
@@ -123,7 +121,6 @@ main () {
           ]
       ))),
       expect: () => [
-        StationsLoading(),
         StationUpdated(),
       ],
     );
@@ -133,7 +130,6 @@ main () {
       build: () => StationsBloc(stationsRepository: MockAppHttpManager()),
       act: (bloc) => bloc.add(DeleteStation('MIGROL_TO_DELETE')),
       expect: () => [
-        StationsLoading(),
         StationDeleted(),
       ],
     );

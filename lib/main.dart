@@ -3,12 +3,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:autosense/bloc/gas_station_observer.dart';
 import 'package:autosense/bloc/gas_stations_bloc.dart';
 import 'package:autosense/data/app_http_manager.dart';
-import 'di.dart';
 import 'package:autosense/ui/home_page.dart';
 
 void main() {
   Bloc.observer = StationsBlocObserver();
-  configureDependencies();
   runApp(
     BlocProvider(
       create: (context) => StationsBloc(stationsRepository: AppHttpManager()),
