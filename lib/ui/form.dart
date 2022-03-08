@@ -46,7 +46,7 @@ class _FormState extends State<StationForm> {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.all(8.0),
+      padding: const EdgeInsets.all(8.0),
       child: Form(
           key: _formKey,
           child: Column(
@@ -124,13 +124,13 @@ class _FormState extends State<StationForm> {
               Row(
                 children: widget.station.pumps.asMap().entries.map((pump) => Expanded(
                   flex: 1,
-                  child: Container(
+                  child: SizedBox(
                     width: MediaQuery.of(context).size.width * 0.333,
                     child: Row(
                       children: [
                         Expanded(
                           child: TextFormField(
-                            keyboardType: TextInputType.numberWithOptions(decimal: true),
+                            keyboardType: const TextInputType.numberWithOptions(decimal: true),
                             inputFormatters: [
                               FilteringTextInputFormatter.allow(RegExp('[0-9.,]+')),
                             ],
@@ -153,7 +153,7 @@ class _FormState extends State<StationForm> {
                               });
                             },
                             decoration: InputDecoration(
-                              labelText: fuelType['${pump.value.fuel_type}'],
+                              labelText: fuelType[pump.value.fuel_type],
                               hintText: 'Type...',
                             ),
 
@@ -201,13 +201,13 @@ class _FormState extends State<StationForm> {
                         );
 
                         if (widget.isNewStation) {
-                          context.read<StationsBloc>().add(CreateStation(station));
+                          context.read<StationsBloc>().add(CreateStation(station: station));
                           Navigator.push(
                             context,
                             MaterialPageRoute(builder: (context) => const HomePage()),
                           );
                         } else {
-                          context.read<StationsBloc>().add(UpdateStation(station));
+                          context.read<StationsBloc>().add(UpdateStation(station: station));
                           Navigator.push(
                             context,
                             MaterialPageRoute(builder: (context) => const HomePage()),
@@ -222,7 +222,7 @@ class _FormState extends State<StationForm> {
                       }
                     },
                   ),
-                  if (widget.isNewStation == false) SizedBox(width: 12),
+                  if (widget.isNewStation == false) const SizedBox(width: 12),
                   if (widget.isNewStation == false) ElevatedButton(
                     child: const Text('Delete'),
                     onPressed: () => showDialog(
@@ -237,7 +237,7 @@ class _FormState extends State<StationForm> {
                             ),
                             TextButton(
                               onPressed: () {
-                                context.read<StationsBloc>().add(DeleteStation(widget.station.id));
+                                context.read<StationsBloc>().add(DeleteStation(stationId: widget.station.id));
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(builder: (context) => const HomePage()),

@@ -7,14 +7,30 @@ import 'package:latlong2/latlong.dart';
 import 'package:autosense/data/models/station.dart';
 
 class StationsMap extends StatefulWidget {
-  final List<Station> stations;
-
-  const StationsMap({Key? key, required this.stations}) : super(key: key);
+  const StationsMap({Key? key}) : super(key: key);
 
   @override
   _StationsMapState createState() => _StationsMapState();
 }
 class _StationsMapState extends State<StationsMap> {
+
+  static Station _generateNewStation(List<Station> stations, LatLng coordinates) {
+    return Station(
+      id: 'MIGROL_${_generateId(stations)}',
+      name: '',
+      address: '',
+      city: '',
+      latitude: coordinates.latitude,
+      longitude: coordinates.longitude,
+      pumps: ['BENZIN_95', 'BENZIN_98', 'DIESEL']
+          .asMap().entries.map((type) => Pump(
+        id: '1000${type.key + 1}',
+        fuel_type: type.value,
+        available: true,
+        price: 0,
+      )).toList(),
+    );
+  }
 
   static void _showModalBottomSheet(BuildContext context, Station station, bool isNewStation) => showModalBottomSheet(
       context: context,
@@ -44,21 +60,7 @@ class _StationsMapState extends State<StationsMap> {
                   center: LatLng(47.373878, 8.545094),
                   zoom: 10,
                   onTap: (position, coordinates) {
-                    Station newStation = Station(
-                      id: 'MIGROL_${_generateId(widget.stations)}',
-                      name: '',
-                      address: '',
-                      city: '',
-                      latitude: coordinates.latitude,
-                      longitude: coordinates.longitude,
-                      pumps: ['BENZIN_95', 'BENZIN_98', 'DIESEL']
-                          .asMap().entries.map((type) => Pump(
-                        id: '1000${type.key + 1}',
-                        fuel_type: type.value,
-                        available: true,
-                        price: 0,
-                      )).toList(),
-                    );
+                    Station newStation = _generateNewStation(context.read<StationsBloc>().state.stations, coordinates);
                     _showModalBottomSheet(context, newStation, true);
                   }
               ),
@@ -68,7 +70,7 @@ class _StationsMapState extends State<StationsMap> {
                   subdomains: ['a', 'b', 'c'],
                 ),
                 MarkerLayerOptions(
-                    markers: widget.stations.map((station) => Marker(
+                    markers: context.read<StationsBloc>().state.stations.map((station) => Marker(
                         width: 48,
                         height: 48,
                         point: LatLng(station.latitude, station.longitude),

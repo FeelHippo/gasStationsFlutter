@@ -1,33 +1,27 @@
 import 'package:equatable/equatable.dart';
 import 'package:autosense/data/models/station.dart';
 
-abstract class StationsState extends Equatable {
+enum StationsAppState {
+  initial,
+  fetch,
+  success,
+  failure,
+}
 
-  final List<Station>? stations;
-  const StationsState({ this.stations });
+class StationsState extends Equatable {
+  const StationsState._({
+    required this.status,
+    this.stations = const [],
+  });
+
+  const StationsState.initial() : this._(status: StationsAppState.initial);
+  const StationsState.fetch(fetchedStations) : this._(status: StationsAppState.fetch, stations: fetchedStations);
+  const StationsState.success() : this._(status: StationsAppState.success);
+  const StationsState.failure() : this._(status: StationsAppState.failure);
+
+  final StationsAppState status;
+  final List<Station> stations;
 
   @override
-  List<Object> get props => [];
-}
-
-class StationsInitState extends StationsState {
-  final List<Station> stations;
-  const StationsInitState({ required this.stations }) : super(stations: stations);
-}
-class StationsLoaded extends StationsState {
-  final List<Station> stations;
-  StationsLoaded({ required this.stations }) : super(stations: stations);
-
-  @override
-  List<Object> get props => [stations];
-}
-class StationsListError extends StationsState {}
-class StationCreated extends StationsState {
-  const StationCreated();
-}
-class StationUpdated extends StationsState {
-  const StationUpdated();
-}
-class StationDeleted extends StationsState {
-  const StationDeleted();
+  List<Object> get props => [status, stations];
 }

@@ -1,20 +1,21 @@
 import 'package:autosense/data/models/station.dart';
 import 'package:equatable/equatable.dart';
 
-abstract class StationEvents extends Equatable {
-  const StationEvents();
-}
-
-class GetStations extends StationEvents {
-  const GetStations();
+abstract class StationEvent extends Equatable {
+  const StationEvent();
 
   @override
   List<Object> get props => [];
 }
 
-class CreateStation extends StationEvents {
+class GetStations extends StationEvent {
+  const GetStations();
+}
+
+class CreateStation extends StationEvent {
+  const CreateStation({ required this.station });
+
   final Station station;
-  const CreateStation(this.station);
 
   @override
   List<Object> get props => [station];
@@ -22,9 +23,10 @@ class CreateStation extends StationEvents {
   String toString() => 'CreateStation { name: ${station.name}, address: ${station.address}, city: ${station.city} }';
 }
 
-class UpdateStation extends StationEvents {
+class UpdateStation extends StationEvent {
+  const UpdateStation({ required this.station });
+
   final Station station;
-  const UpdateStation(this.station);
 
   @override
   List<Object> get props => [station];
@@ -32,9 +34,10 @@ class UpdateStation extends StationEvents {
   String toString() => 'UpdateStation { name: ${station.name}, address: ${station.address}, city: ${station.city} }';
 }
 
-class DeleteStation extends StationEvents {
+class DeleteStation extends StationEvent {
+  const DeleteStation({ required this.stationId });
+
   final String stationId;
-  const DeleteStation(this.stationId);
 
   @override
   List<Object> get props => [stationId];

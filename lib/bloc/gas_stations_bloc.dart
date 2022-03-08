@@ -1,91 +1,69 @@
-import 'dart:io';
+import 'dart:async';
 import 'package:autosense/bloc/gas_stations_states.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:autosense/bloc/gas_station_events.dart';
-import 'package:autosense/data/models/station.dart';
 import 'package:autosense/data/models/repository.dart';
 
-class StationsBloc extends Bloc<StationEvents, StationsState> {
+class StationsBloc extends Bloc<StationEvent, StationsState> {
 
-  List<Station> _stations = [];
-  List<Station> get stations => _stations;
   final Repository stationsRepository;
 
-  StationsBloc({ required this.stationsRepository }) : super(const StationsInitState(stations: []));
-
-  @override
-  Stream<StationsState> mapEventToState(StationEvents event) async* {
-      if (event is GetStations) {
-        yield* _mapGetStationsToState();
-      }
-      if (event is CreateStation) {
-        yield* _mapCreateStationToState(event);
-      }
-      if (event is UpdateStation) {
-        yield* _mapUpdateStationToState(event);
-      }
-      if (event is DeleteStation) {
-        yield* _mapDeleteStationToState(event);
-      }
+  StationsBloc({ required this.stationsRepository }) : super(const StationsState.initial()) {
+    on<GetStations>(_getStations);
+    on<CreateStation>(_createStation);
+    on<UpdateStation>(_updateStation);
+    on<DeleteStation>(_deleteStation);
   }
 
-  Stream<StationsState> _mapGetStationsToState() async* {
+  FutureOr<void> _getStations<StationEvent>(GetStations event, Emitter<StationsState> emit) async {
     try {
-      _stations = await stationsRepository.get();
-      yield StationsLoaded(stations: _stations);
-    } on SocketException {
-      yield StationsListError();
-    } on HttpException {
-      yield StationsListError();
-    } on FormatException {
-      yield StationsListError();
-    } catch (e) {
-      yield StationsListError();
+      final stations = await stationsRepository.get();
+      if (stations.isNotEmpty) {
+        emit(StationsState.fetch(stations));
+      } else {
+        emit(const StationsState.failure());
+      }
+    } catch (error) {
+      emit(const StationsState.failure());
     }
   }
 
-  Stream<StationsState> _mapCreateStationToState(CreateStation event) async* {
+  FutureOr<void> _createStation<StationEvent>(CreateStation event, Emitter<StationsState> emit) async {
     try {
-      await stationsRepository.create(event.station);
-      yield const StationCreated();
-    } on SocketException {
-      yield StationsListError();
-    } on HttpException {
-      yield StationsListError();
-    } on FormatException {
-      yield StationsListError();
-    } catch (e) {
-      yield StationsListError();
+      final success = await stationsRepository.create(event.station);
+      if (success) {
+        emit(const StationsState.success());
+      } else {
+        emit(const StationsState.failure());
+      }
+    } catch (error) {
+      emit(const StationsState.failure());
     }
   }
 
-  Stream<StationsState> _mapUpdateStationToState(UpdateStation event) async* {
+  FutureOr<void> _updateStation<StationEvent>(UpdateStation event, Emitter<StationsState> emit) async {
     try {
-      await stationsRepository.update(event.station);
-      yield const StationUpdated();
-    } on SocketException {
-      yield StationsListError();
-    } on HttpException {
-      yield StationsListError();
-    } on FormatException {
-      yield StationsListError();
-    } catch (e) {
-      yield StationsListError();
+      final success = await stationsRepository.update(event.station);
+      if (success) {
+        emit(const StationsState.success());
+      } else {
+        emit(const StationsState.failure());
+      }
+    } catch (error) {
+      emit(const StationsState.failure());
     }
   }
 
-  Stream<StationsState> _mapDeleteStationToState(DeleteStation event) async* {
+  FutureOr<void> _deleteStation<StationEvent>(DeleteStation event, Emitter<StationsState> emit) async {
     try {
-      await stationsRepository.delete(event.stationId);
-      yield const StationDeleted();
-    } on SocketException {
-      yield StationsListError();
-    } on HttpException {
-      yield StationsListError();
-    } on FormatException {
-      yield StationsListError();
-    } catch (e) {
-      yield StationsListError();
+      final success = await stationsRepository.delete(event.stationId);
+      if (success) {
+        emit(const StationsState.success());
+      } else {
+        emit(const StationsState.failure());
+      }
+    } catch (error) {
+      emit(const StationsState.failure());
     }
   }
 }
